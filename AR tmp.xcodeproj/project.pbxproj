@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		F750328A2559833D000B168D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75032892559833D000B168D /* AppDelegate.swift */; };
-		F750328C2559833D000B168D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750328B2559833D000B168D /* ContentView.swift */; };
-		F750328E2559833D000B168D /* Experience.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = F750328D2559833D000B168D /* Experience.rcproject */; };
+		F750328C2559833D000B168D /* ShootingContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750328B2559833D000B168D /* ShootingContentView.swift */; };
 		F75032902559833E000B168D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F750328F2559833E000B168D /* Assets.xcassets */; };
 		F75032932559833E000B168D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F75032922559833E000B168D /* Preview Assets.xcassets */; };
 		F750329E2559833F000B168D /* AR_tmpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750329D2559833F000B168D /* AR_tmpTests.swift */; };
 		F75032A92559833F000B168D /* AR_tmpUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75032A82559833F000B168D /* AR_tmpUITests.swift */; };
+		F7BA1B68255A8F2700D5AEBE /* MainMenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7BA1B67255A8F2700D5AEBE /* MainMenuContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,8 +36,7 @@
 /* Begin PBXFileReference section */
 		F75032862559833D000B168D /* AR tmp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AR tmp.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F75032892559833D000B168D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F750328B2559833D000B168D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		F750328D2559833D000B168D /* Experience.rcproject */ = {isa = PBXFileReference; lastKnownFileType = file.rcproject; path = Experience.rcproject; sourceTree = "<group>"; };
+		F750328B2559833D000B168D /* ShootingContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShootingContentView.swift; sourceTree = "<group>"; };
 		F750328F2559833E000B168D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F75032922559833E000B168D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F75032942559833E000B168D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -47,6 +46,7 @@
 		F75032A42559833F000B168D /* AR tmpUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AR tmpUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F75032A82559833F000B168D /* AR_tmpUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AR_tmpUITests.swift; sourceTree = "<group>"; };
 		F75032AA2559833F000B168D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F7BA1B67255A8F2700D5AEBE /* MainMenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,8 +98,8 @@
 			isa = PBXGroup;
 			children = (
 				F75032892559833D000B168D /* AppDelegate.swift */,
-				F750328B2559833D000B168D /* ContentView.swift */,
-				F750328D2559833D000B168D /* Experience.rcproject */,
+				F750328B2559833D000B168D /* ShootingContentView.swift */,
+				F7BA1B67255A8F2700D5AEBE /* MainMenuContentView.swift */,
 				F750328F2559833E000B168D /* Assets.xcassets */,
 				F75032942559833E000B168D /* Info.plist */,
 				F75032912559833E000B168D /* Preview Content */,
@@ -262,9 +262,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F750328C2559833D000B168D /* ContentView.swift in Sources */,
+				F750328C2559833D000B168D /* ShootingContentView.swift in Sources */,
 				F750328A2559833D000B168D /* AppDelegate.swift in Sources */,
-				F750328E2559833D000B168D /* Experience.rcproject in Sources */,
+				F7BA1B68255A8F2700D5AEBE /* MainMenuContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,7 +351,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -406,7 +406,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
