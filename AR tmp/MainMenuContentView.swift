@@ -7,22 +7,13 @@
 
 import SwiftUI
 
-enum Game {
-    case shooting
-}
 
 struct MainMenuContentView: View {
-    @State var selectedGame: Game?
     var body: some View {
-        if selectedGame == nil {
-            List {
-                Button("Shooting") {
-                    selectedGame = .shooting
-                }
+        NavigationView {
+            NavigationLink(destination: ShootingContentView()){
+                Text("Shooting")
             }
-        }
-        if selectedGame != nil, selectedGame! == .shooting {
-            ShootingContentView()
         }
     }
 }
