@@ -16,37 +16,75 @@ struct ShootingContentView : View {
     }
 }
 
+let gold = SimpleMaterial(color: .yellow, isMetallic: true)
+
 struct ARViewContainer: UIViewRepresentable {
-    
-    let box = ModelEntity(mesh: .generateBox(size: 10))
-//    let anchor = AnchorEntity(world: [0,0,0])
+    let origin = AnchorEntity(world: [0,0,0])
     let anchor = AnchorEntity()
+    let camera = AnchorEntity(.camera)
     @Binding var abc: Bool
     
-    func makeUIView(context: Context) -> ARView {
+    func shootBox(cameraTransform: Transform) -> ModelEntity {
+        let box = ModelEntity(mesh: .generateBox(size: 5), materials: [gold])
         
-        let arView = ARView(frame: .zero)
-        
-//        let box = ModelEntity(mesh: .generateBox(size: 0.1))
-//        box.components.set(ModelComponent(mesh: .generateBox(size: [0.2, 0.3, 0.2]),materials: [SimpleMaterial(color: .gray, isMetallic: true)]))
         box.components.set(CollisionComponent(
-            shapes: [.generateBox(size: [0.2, 0.3, 0.2])],
-            mode: .trigger,
-            filter: .sensor
+            shapes: [.generateBox(size: [5, 5, 5])],
+            mode: .default,
+            filter: .default
         ))
-        box.components.set(PhysicsBodyComponent(massProperties: PhysicsMassProperties(mass: 0.05), material: PhysicsMaterialResource.generate(friction: 0.8, restitution: 0.8), mode: .dynamic))
-        box.components.set(PhysicsMotionComponent(linearVelocity: [0,-0.02,0], angularVelocity: [0,0,0]))
-        anchor.addChild(box)
-//        box.addForce(SIMD3([0,0,10]), relativeTo: anchor)
-        arView.scene.addAnchor(anchor)
+                
+        box.components.set(PhysicsBodyComponent(massProperties: .default, material: .default, mode: .dynamic))
+        
+        let x: Float = cameraTransform.rotation.imag.x
+        let y: Float = cameraTransform.rotation.imag.y
+        let z: Float = cameraTransform.rotation.imag.z
+        print("x: \(x) y: \(y) z: \(z)")
+        var nz: Float = y
+        if nz > 0.5 {
+            nz = 2 * (y - 0.5)
+        } else if nz > 0 {
+            nz = 2 * (y - 0.5)
+        } else if nz < -0.5 {
+            nz = -2 * (y + 0.5)
+        } else if nz < 0 {
+            nz = -2 * (y + 0.5)
+        }
+        
+        var nx: Float = 0
+        if y > 0 {
+            nx = (1 - abs(nz)) * -1
+        } else {
+            nx = 1 - abs(nz)
+        }
+        print("nx: \(nx)")
+        print("nz: \(nz)")
+        let velX = nx * 50
+        let velZ = nz * 50
+        print("velX: \(velX)")
+        print("velZ: \(velZ)")
+        
+        box.components.set(PhysicsMotionComponent(linearVelocity: [velX,0,velZ]))
+        
+        return box
+    }
+    
+    func makeUIView(context: Context) -> ARView {
+        let arView = ARView(frame: .zero)
+        arView.debugOptions = [.showPhysics]
+        arView.scene.addAnchor(camera)
         
         return arView
-        
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {
         if abc {
-            box.addForce([1,2,20], relativeTo: anchor)
+            DispatchQueue.main.async {
+                abc = false
+            }
+            
+            print("camera: \(uiView.cameraTransform.rotation)")
+            let box = shootBox(cameraTransform: uiView.cameraTransform)
+            camera.addChild(box)
         }
     }
     
