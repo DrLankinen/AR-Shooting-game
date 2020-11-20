@@ -18,13 +18,24 @@ struct ShootingContentView : View {
 
 let gold = SimpleMaterial(color: .yellow, isMetallic: true)
 
-struct ARViewContainer: UIViewRepresentable {
-    let origin = AnchorEntity(world: [0,0,0])
-    let anchor = AnchorEntity()
-    let camera = AnchorEntity(.camera)
-    @Binding var abc: Bool
+extension ARView {
+    func setupGestures() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        self.addGestureRecognizer(tap)
+    }
     
-    func shootBox(cameraTransform: Transform) -> ModelEntity {
+    @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+        print("tap")
+        self.shootBox()
+//        if let anchor = self.scene.anchors.first, let child = anchor.children.first {
+//            print("child: \(child)")
+//            let entity = child as! (Entity & HasPhysics)
+//            entity.addForce([100,100,100], relativeTo: anchor)
+//        }
+    }
+    
+    func shootBox() {
+        let cameraTransform = self.cameraTransform
         let box = ModelEntity(mesh: .generateBox(size: 5), materials: [gold])
         
         box.components.set(CollisionComponent(
@@ -63,29 +74,29 @@ struct ARViewContainer: UIViewRepresentable {
         print("velX: \(velX)")
         print("velZ: \(velZ)")
         
-        box.components.set(PhysicsMotionComponent(linearVelocity: [velX,0,velZ]))
+//        box.components.set(PhysicsMotionComponent(linearVelocity: [velX,0,velZ]))
+        box.components.set(PhysicsMotionComponent(linearVelocity: [0,0,-10]))
         
-        return box
+        let lcam = AnchorEntity(world: self.cameraTransform.matrix)
+//        let lcam = AnchorEntity(transform: self.cameraTransform.matrix)
+        self.scene.addAnchor(lcam)
+        lcam.addChild(box)
     }
+}
+
+struct ARViewContainer: UIViewRepresentable {
+    @Binding var abc: Bool
     
     func makeUIView(context: Context) -> ARView {
         let arView = ARView(frame: .zero)
         arView.debugOptions = [.showPhysics]
-        arView.scene.addAnchor(camera)
+        
+        arView.setupGestures()
+        arView.shootBox()
         
         return arView
     }
     
-    func updateUIView(_ uiView: ARView, context: Context) {
-        if abc {
-            DispatchQueue.main.async {
-                abc = false
-            }
-            
-            print("camera: \(uiView.cameraTransform.rotation)")
-            let box = shootBox(cameraTransform: uiView.cameraTransform)
-            camera.addChild(box)
-        }
-    }
+    func updateUIView(_ uiView: ARView, context: Context) {}
     
 }
