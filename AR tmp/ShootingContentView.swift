@@ -10,10 +10,8 @@ import RealityKit
 import ARKit
 
 struct ShootingContentView : View {
-    @State var abc: Bool = false
     var body: some View {
-        ARViewContainer(abc: $abc).edgesIgnoringSafeArea(.all)
-        Button("hello") { self.abc = !abc }
+        ARViewContainer().edgesIgnoringSafeArea(.all)
     }
 }
 
@@ -31,70 +29,82 @@ extension ARView {
         let anchor = ARAnchor(name: "Particle", transform: self.cameraTransform.matrix)
         self.session.add(anchor: anchor)
     }
-    
-    func shootBox() {
-        let box = ModelEntity(mesh: .generateBox(size: 5), materials: [gold])
-        
-        box.components.set(CollisionComponent(
-            shapes: [.generateBox(size: [5, 5, 5])],
-            mode: .default,
-            filter: .default
-        ))
-                
-        box.components.set(PhysicsBodyComponent(massProperties: .default, material: .default, mode: .dynamic))
-        
-        box.components.set(PhysicsMotionComponent(linearVelocity: [0,0,-50]))
-        
-        let lcam = AnchorEntity(world: self.cameraTransform.matrix)
-        self.scene.addAnchor(lcam)
-        lcam.addChild(box)
-    }
 }
 
 struct ARViewContainer: UIViewRepresentable {
-    @Binding var abc: Bool
+    let arView = ARView(frame: .zero)
     
     class Coordinator: NSObject, ARSessionDelegate {
+        let arView: ARView
+        init(arView: ARView) {
+            self.arView = arView
+        }
+        
         func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
             print("session")
             for anchor in anchors {
                 if let anchorName = anchor.name, anchorName == "Particle" {
-                    print("anchorName")
+                    print("anchorName: \(anchorName)")
                     let box = ModelEntity(mesh: .generateBox(size: 5), materials: [gold])
-                    
                     box.components.set(CollisionComponent(
-                        shapes: [.generateBox(size: [5, 5, 5])],
-                        mode: .default,
-                        filter: .default
+                                        shapes: [.generateBox(size: [5,5,5])],
+                                        mode: .default,
+                                        filter: .default
                     ))
-                            
-                    box.components.set(PhysicsBodyComponent(massProperties: .default, material: .default, mode: .dynamic))
                     
-                    box.components.set(PhysicsMotionComponent(linearVelocity: [0,0,-10]))
-//                    let lcam = AnchorEntity(anchor: anchor)
-//                    lcam.addChild(box)
-//                    session.add(anchor: lcam)
+
+                    let e = simd_quatf(anchor.transform)
+                    let x: Float = e.imag.x
+                    let y: Float = e.imag.y
+                    let z: Float = e.imag.z
+                    print("x: \(x) y: \(y) z: \(z)")
+                    var nz: Float = y
+                    if nz > 0.5 {
+                        nz = 2 * (y - 0.5)
+                    } else if nz > 0 {
+                        nz = 2 * (y - 0.5)
+                    } else if nz < -0.5 {
+                        nz = -2 * (y + 0.5)
+                    } else if nz < 0 {
+                        nz = -2 * (y + 0.5)
+                    }
+
+                    var nx: Float = 0
+                    if y > 0 {
+                        nx = (1 - abs(nz)) * -1
+                    } else {
+                        nx = 1 - abs(nz)
+                    }
+                    print("nx: \(nx)")
+                    print("nz: \(nz)")
+                    let velX = nx * 50
+                    let velZ = nz * 50
+                    print("velX: \(velX)")
+                    print("velZ: \(velZ)")
+                    
+                    box.components.set(PhysicsBodyComponent(massProperties: .default, material: .default, mode: .dynamic))
+                    box.components.set(PhysicsMotionComponent(linearVelocity: [velX, 0, velZ]))
+                    
+                    let anchorEntity = AnchorEntity(anchor: anchor)
+                    anchorEntity.addChild(box)
+                    arView.scene.addAnchor(anchorEntity)
                 }
             }
         }
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator()
+        Coordinator(arView: arView)
     }
     
     func makeUIView(context: Context) -> ARView {
-        let arView = ARView(frame: .zero)
         arView.debugOptions = [.showPhysics]
         
         arView.session.delegate = context.coordinator
-        
         arView.setupGestures()
-        arView.shootBox()
         
         return arView
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {}
-    
 }
