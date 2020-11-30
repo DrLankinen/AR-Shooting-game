@@ -26,8 +26,55 @@ extension ARView {
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         print("tap")
         
-        let anchor = ARAnchor(name: "Particle", transform: self.cameraTransform.matrix)
-        self.session.add(anchor: anchor)
+        let box = ModelEntity(mesh: .generateSphere(radius: 5), materials: [gold])
+        box.components.set(CollisionComponent(
+                            shapes: [.generateBox(size: [5,5,5])],
+                            mode: .default,
+                            filter: .default
+        ))
+        
+
+        let e = self.cameraTransform.rotation
+        print("normalized: \(e.normalized)")
+        print("vector: \(e.vector)")
+        let y: Float = 2 * (asin(e.imag.y  * (e.real < 0 ? -1 : 1)) * 180.0 / Float.pi)
+        print("y: \(y)")
+        var nx: Float = y/90
+        var nz: Float = 1 - (y/90)
+        
+        if y < -90 {
+            // 2
+            nx = (nx/2+1)*2
+            nz = nz - 2
+        } else if y < 0 {
+            // 1
+            nx = abs(nx)
+            nz = (2/nz - 1) * (-1)
+        } else if y > 90 {
+            // 3
+            nx = (2/nx - 1) * (-1)
+            nz = abs(nz)
+        } else if y > 0 {
+            // 4
+            nx = nx * (-1)
+            nz = nz * (-1)
+        }
+        
+        print("nx: \(nx)")
+        print("nz: \(nz)")
+        let velX = nx * 50
+        let velZ = nz * 50
+        print("velX: \(velX)")
+        print("velZ: \(velZ)")
+        print()
+        
+        box.components.set(PhysicsBodyComponent(massProperties: .default, material: .default, mode: .dynamic))
+        box.components.set(PhysicsMotionComponent(linearVelocity: [velX, 0, velZ]))
+//        box.components.set(PhysicsMotionComponent(linearVelocity: [50, 0, 0]))
+        
+        let anchorEntity = AnchorEntity()
+        anchorEntity.addChild(box)
+        self.scene.addAnchor(anchorEntity)
     }
 }
 
