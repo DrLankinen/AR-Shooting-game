@@ -10,8 +10,15 @@ import RealityKit
 import ARKit
 
 struct ShootingContentView : View {
+    let arViewContainer = ARViewContainer()
     var body: some View {
-        ARViewContainer().edgesIgnoringSafeArea(.all)
+        VStack {
+            arViewContainer
+            Button("Press me!") {
+                print("hello")
+                arViewContainer.screenShot()
+            }
+        }
     }
 }
 
@@ -80,6 +87,13 @@ extension ARView {
 
 struct ARViewContainer: UIViewRepresentable {
     let arView = ARView(frame: .zero)
+    
+    func screenShot() {
+        print("Screen shot!")
+//        arView.snapshot(saveToHDR: false) { (image) in
+//            print("website")
+//        }
+    }
     
     class Coordinator: NSObject, ARSessionDelegate {
         let arView: ARView
